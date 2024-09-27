@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ProductsManager.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductsManager.Models
 {
     public class Product
     {
         public int Id { get; set; }
-        [Required(ErrorMessage ="Name is required")]
-        [StringLength(50,MinimumLength = 3, ErrorMessage ="Name should be between 3 and 5o Characters")]
+
+        [NameValidation]
         public string Name { get; set; }
         public string Description { get; set; }
 
