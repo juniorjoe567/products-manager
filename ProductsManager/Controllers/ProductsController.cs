@@ -8,25 +8,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProductsManager.Data;
 using ProductsManager.Models;
+using ProductsManager.Repositories;
 using ProductsManager.Services;
 
 namespace ProductsManager.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly ProductsManagerContext _context;
+        private readonly IRepository<Product> _repository;
         private readonly IProductService _productService;
 
-        public ProductsController(ProductsManagerContext context, IProductService productService)
+        public ProductsController(IRepository<Product> repository, IProductService productService)
         {
-            _context = context;
+            _repository = repository;
             _productService = productService;
         }
 
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _repository.GetAll());
         }
 
         // GET: Products/Details/5
@@ -64,8 +65,7 @@ namespace ProductsManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                _repository.Add(product);
                 TempData["SuccessMessage"] = "Product Successfully Saved";
                 return RedirectToAction(nameof(Index));
             }
@@ -81,7 +81,7 @@ namespace ProductsManager.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = _repository.GetById(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -105,8 +105,7 @@ namespace ProductsManager.Controllers
             {
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    _repository.Update(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -133,8 +132,7 @@ namespace ProductsManager.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var product = _repository.GetById(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -148,19 +146,14 @@ namespace ProductsManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-            }
-
-            await _context.SaveChangesAsync();
+            _repository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            var products = _repository.GetAll().Result;
+            return products.Any(e => e.Id == id);
         }
     }
 }

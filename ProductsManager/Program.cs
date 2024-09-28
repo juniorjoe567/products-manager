@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using ProductsManager.Models;
 using ProductsManager;
 using ProductsManager.Services;
+using ProductsManager.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 builder.Services.AddScoped<IProductService, ProductService>();
-
+builder.Services.AddScoped<IRepository<Product>,ProductRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
