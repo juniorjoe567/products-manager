@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProductsManager.Data;
 using ProductsManager.Models;
+using ProductsManager.Services;
 
 namespace ProductsManager.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ProductsManagerContext _context;
+        private readonly IProductService _productService;
 
-        public ProductsController(ProductsManagerContext context)
+        public ProductsController(ProductsManagerContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: Products
@@ -29,13 +32,14 @@ namespace ProductsManager.Controllers
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //var product = await _context.Products
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _productService.GetProduct(id.Value);
             if (product == null)
             {
                 return NotFound();

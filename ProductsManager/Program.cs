@@ -3,6 +3,7 @@ using ProductsManager.Data;
 using Microsoft.AspNetCore.Identity;
 using ProductsManager.Models;
 using ProductsManager;
+using ProductsManager.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
