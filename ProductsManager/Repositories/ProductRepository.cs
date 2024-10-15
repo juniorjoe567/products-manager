@@ -14,7 +14,6 @@ namespace ProductsManager.Repositories
         public void Add(Product entity)
         {
             _context.Products.Add(entity);
-            _context.SaveChanges();
         }
 
         public void Delete(int id)
@@ -40,7 +39,6 @@ namespace ProductsManager.Repositories
         public void Update(Product entity)
         {
             _context.Products.Update(entity);
-            _context.SaveChanges();
         }
     }
 }

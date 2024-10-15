@@ -1,24 +1,24 @@
 ﻿using ProductsManager.Models;
 using ProductsManager.Repositories;
+using ProductsManager.UnitOfWork;
 
 namespace ProductsManager.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly OrderRepository _orderRepository;
-        private readonly CustomerRepository _customerRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository)
+        public OrderService(IUnitOfWork unitOfWork)
         {
-            _orderRepository = orderRepository;
-            _customerRepository = customerRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
         public void PlaceOrder(Order order, Customer customer)
         {
-            _orderRepository.Add(order);
-            _customerRepository.Update(customer);
+            _unitOfWork.Orders.Add(order);
+            _unitOfWork.Customers.Update(customer);
+            _unitOfWork.Complete();
         }
     }
 }

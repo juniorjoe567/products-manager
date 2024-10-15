@@ -5,6 +5,7 @@ using ProductsManager.Models;
 using ProductsManager;
 using ProductsManager.Services;
 using ProductsManager.Repositories;
+using ProductsManager.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IRepository<Product>,ProductRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -14,7 +14,6 @@ namespace ProductsManager.Repositories
         public void Add(Order entity)
         {
             _context.Orders.Add(entity);
-            _context.SaveChanges();
         }
 
         public void Delete(int id)
